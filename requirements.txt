@@ -1,0 +1,4 @@
+numpy
+mss
+pynput
+Pillow
