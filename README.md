@@ -4,6 +4,23 @@ A Windows computer-vision controller for a vertical slider minigame. It detects 
 
 > Use automation responsibly and follow the rules of the game or service where you run it.
 
+**Built with:** Python · NumPy · mss (screen capture) · pynput (input) · Win32 overlay
+
+## How it works
+
+```
+screen capture ──▶ detect ──▶ predict ──▶ control ──▶ learn
+ mss, selected      slider and   target       hold or     update the
+ region             target by    velocity,    release     dynamics model
+                    color        reversals    the mouse   from confident
+                                                          transitions
+```
+
+1. **Detect.** Each frame, the bot finds the white slider and the moving target inside the selected region by color masks and filled-run search, tracking from the previous position to reject noise.
+2. **Predict.** It estimates the target's velocity and acceleration and anticipates reversals, so it aims where the target will be rather than where it is.
+3. **Control.** A learned dynamics model, with separate fits for rising (hold) and falling (release), picks whether to hold or release the mouse this frame.
+4. **Learn.** High-confidence transitions update the online model, which is checked against a stable reference model so it can't drift too far.
+
 ## Features
 
 - Color-based slider and target detection inside a user-selected region
@@ -87,7 +104,3 @@ The trainer quarantines weak sessions, balances samples across recording runs, t
 | `slider_model_v4.npz` | Stable safety-reference model |
 | `train_slider_model.py` | Robust offline trainer for recorded CSV data |
 | `requirements.txt` | Python dependencies |
-
-## Repository description
-
-Computer-vision slider controller with live diagnostics, guarded online learning, target-motion prediction, and automatic idle recovery.
